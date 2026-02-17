@@ -2,11 +2,11 @@
 
 $ErrorActionPreference = "Stop"
 
-$vpcId    = "vpc-0ae02f05750e2efc1"   # your VPC
-$vpcName  = "humada-io-aws-sg1-api-"      # ← your prefix here
-$subnets  = @("subnet-0b3f436a2b85336dd" ," subnet-02d13e24a805f6db8" , "subnet-0624640c15f812e73")
-$sg       = "sg-043384ab0b96220da"
-$region   = "ap-southeast-1"
+$vpcId    = ""   # your VPC
+$vpcName  = ""      # ← your prefix here
+$subnets  = @("")
+$sg       = ""
+$region   = ""
 
 $commonParams = "--vpc-id $vpcId --vpc-endpoint-type Interface --security-group-ids $sg --private-dns-enabled --region $region"
 
