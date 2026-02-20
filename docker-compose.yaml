@@ -10,17 +10,34 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
+      - ~/.aws:/root/.aws:ro  # Mount local AWS credentials (read-only)
     environment:
       - PYTHONUNBUFFERED=1
-    command: python main.py
+      - DEBUG=True
+    command: >
+      sh -c "
+      echo '🔍 Checking AWS CLI installation...' &&
+      if ! command -v aws &> /dev/null; then
+        echo '❌ AWS CLI not found. Installing AWS CLI v2...' &&
+        apt-get update &&
+        apt-get install -y awscli &&
+        echo '✅ AWS CLI installed successfully'
+      else
+        echo '✅ AWS CLI is already installed'
+      fi &&
+      echo '📋 AWS CLI Version:' &&
+      aws --version &&
+      echo '🚀 Starting FastAPI server...' &&
+      python main.py
+      "
     networks:
       - vpc-endpoint-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 3
-      start_period: 10s
+      retries: 5
+      start_period: 15s
 
   frontend:
     build:
@@ -33,13 +50,13 @@ services:
       - ./frontend:/app
       - /app/node_modules
     environment:
-      - VITE_API_URL=http://localhost:8000
+      - VITE_API_URL=http://backend:8000
     depends_on:
       backend:
         condition: service_healthy
     networks:
       - vpc-endpoint-network
-    command: npm run dev -- --host
+    command: npm run dev -- --host 0.0.0.0
 
 networks:
   vpc-endpoint-network:

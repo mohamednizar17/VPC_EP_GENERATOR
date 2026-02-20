@@ -25,8 +25,8 @@ class ScriptGenerator:
         region: str,
         vpc_id: str,
         service_name: str,
-        tag_prefix: str,
-        tag_suffix: str,
+        tag_prefix: Optional[str] = None,
+        tag_suffix: Optional[str] = None,
         subnets: Optional[List[str]] = None,
         security_groups: Optional[List[str]] = None,
         private_dns_enabled: bool = True,
@@ -39,7 +39,15 @@ class ScriptGenerator:
         
         # Get service short name for tag
         service_short = self._get_service_short_name(service_name)
-        tag_name = f"{tag_prefix}-{service_short}-{tag_suffix}"
+        
+        # Build tag name, handling empty prefix/suffix
+        tag_parts = []
+        if tag_prefix:
+            tag_parts.append(tag_prefix)
+        tag_parts.append(service_short)
+        if tag_suffix:
+            tag_parts.append(tag_suffix)
+        tag_name = "-".join(tag_parts)
         
         # Base command
         cmd = [
@@ -87,8 +95,8 @@ class ScriptGenerator:
         region: str,
         vpc_id: str,
         service_name: str,
-        tag_prefix: str,
-        tag_suffix: str,
+        tag_prefix: Optional[str] = None,
+        tag_suffix: Optional[str] = None,
         subnets: Optional[List[str]] = None,
         security_groups: Optional[List[str]] = None,
         private_dns_enabled: bool = True,
@@ -119,7 +127,15 @@ class ScriptGenerator:
         
         # Get service short name for tags
         service_short = self._get_service_short_name(service_name)
-        tag_name = f"{tag_prefix}-{service_short}-{tag_suffix}"
+        
+        # Build tag name, handling empty prefix/suffix
+        tag_parts = []
+        if tag_prefix:
+            tag_parts.append(tag_prefix)
+        tag_parts.append(service_short)
+        if tag_suffix:
+            tag_parts.append(tag_suffix)
+        tag_name = "-".join(tag_parts)
         
         # Escape tag name for PowerShell
         escaped_tag_name = tag_name.replace('"', '\"')

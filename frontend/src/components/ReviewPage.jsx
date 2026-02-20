@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-function ReviewPage({ formData, onSubmit }) {
+function ReviewPage({ formData, onSubmit, isLocked = false }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -143,12 +143,24 @@ function ReviewPage({ formData, onSubmit }) {
             <span className="font-medium">{formData.vpc_id}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-600">Service:</span>
-            <span className="font-medium">{formData.service_name}</span>
+            <span className="text-gray-600">Services:</span>
+            <span className="font-medium">{formData.service_names?.length || 0} selected</span>
           </div>
+          {formData.service_names && formData.service_names.length > 0 && (
+            <div className="flex justify-between">
+              <span className="text-gray-600">Service ARNs:</span>
+              <div className="flex flex-wrap gap-2 justify-end">
+                {formData.service_names.map((arn, idx) => (
+                  <span key={idx} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
+                    {arn.split('.').pop()}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="flex justify-between">
-            <span className="text-gray-600">Tag:</span>
-            <span className="font-medium">{formData.tag_prefix}-service-{formData.tag_suffix}</span>
+            <span className="text-gray-600">Tag Prefix:</span>
+            <span className="font-medium">{formData.tag_prefix}</span>
           </div>
           {formData.endpoint_type === 'Interface' && (
             <>
@@ -206,8 +218,21 @@ function ReviewPage({ formData, onSubmit }) {
       </button>
 
       {showCommand && (
-        <div className="bg-gray-100 p-4 rounded-lg border-l-4 border-blue-500 font-mono text-sm overflow-x-auto">
-          <code>aws ec2 create-vpc-endpoint --vpc-id {formData.vpc_id} --vpc-endpoint-type {formData.endpoint_type} --service-name {formData.service_name}</code>
+        <div className="bg-gray-100 p-4 rounded-lg border-l-4 border-blue-500 font-mono text-sm overflow-x-auto max-h-96 overflow-y-auto">
+          <div>
+            {formData.service_names && formData.service_names.length > 0 ? (
+              <>
+                <p className="text-gray-700 mb-2">AWS CLI commands for {formData.service_names.length} services:</p>
+                {formData.service_names.map((serviceName, idx) => (
+                  <div key={idx} className="mb-2 pb-2 border-b border-gray-300 last:border-b-0">
+                    <code>aws ec2 create-vpc-endpoint --vpc-id {formData.vpc_id} --vpc-endpoint-type {formData.endpoint_type} --service-name {serviceName}</code>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <code>aws ec2 create-vpc-endpoint --vpc-id {formData.vpc_id} --vpc-endpoint-type {formData.endpoint_type} --service-name [service-name]</code>
+            )}
+          </div>
         </div>
       )}
 
