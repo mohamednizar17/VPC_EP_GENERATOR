@@ -2,10 +2,16 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+# Install system dependencies including AWS CLI and tools for checking installations
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
+    awscli \
+    git \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
+
+# Verify AWS CLI installation
+RUN aws --version && echo "✅ AWS CLI is installed"
 
 # Copy requirements first for better caching
 COPY requirements.txt .
@@ -24,6 +30,10 @@ EXPOSE 8000
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
+
+# Health check script
+COPY healthcheck.sh /app/healthcheck.sh
+RUN chmod +x /app/healthcheck.sh
 
 # Run the application
 CMD ["python", "main.py"]

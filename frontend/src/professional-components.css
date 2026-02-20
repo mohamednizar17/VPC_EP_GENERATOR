@@ -1,126 +1,444 @@
-/* === Endpoint Options (Professional Styling for EndpointSelector) === */
-.endpoint-options {
+/* === Endpoint Selector - Step Header === */
+.ep-step-header {
+  background: linear-gradient(135deg, var(--blue-pale) 0%, #f0f9ff 100%);
+  border-left: 4px solid var(--blue-primary);
+  padding: 1.3rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.ep-step-header h2 {
+  font-size: 1.1rem;
+  font-weight: 850;
+  color: var(--blue-dark);
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.3px;
+}
+
+.ep-step-header p {
+  font-size: 0.9rem;
+  color: #0369a1;
+  font-weight: 500;
+}
+
+/* === Endpoint Option Cards Grid === */
+.endpoint-selector-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
-  margin: 2rem 0;
+  margin: 1.8rem 0;
 }
 
-.endpoint-card {
-  display: grid;
-  grid-template-columns: auto 3.5rem 1fr auto;
-  gap: 1rem;
-  align-items: start;
-  padding: 1.5rem;
-  background: white;
-  border: 2px solid var(--gray-200);
-  border-radius: 10px;
+.endpoint-option-card {
+  position: relative;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.28s ease;
 }
 
-.endpoint-card:hover {
-  border-color: var(--primary);
-  box-shadow: 0 8px 20px rgba(0, 102, 255, 0.12);
-  transform: translateY(-2px);
-}
-
-.endpoint-card input[type="radio"] {
-  display: none;
-}
-
-.hidden-radio {
+.hidden-checkbox {
   display: none !important;
 }
 
-.endpoint-radio {
+.endpoint-option-card input[type="checkbox"] {
+  display: none;
+}
+
+.endpoint-option-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.4rem;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  transition: all 0.28s ease;
+  height: 100%;
+}
+
+.endpoint-option-card.selected .endpoint-option-content {
+  background: linear-gradient(135deg, var(--blue-pale) 0%, #f0f9ff 100%);
+  border-color: var(--blue-primary);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.18);
+}
+
+.endpoint-option-card:hover .endpoint-option-content {
+  border-color: var(--blue-light);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.12);
+  transform: translateY(-2px);
+}
+
+.endpoint-option-header {
   display: flex;
   align-items: center;
+  gap: 0.9rem;
+}
+
+.endpoint-option-icon {
+  font-size: 2rem;
+  line-height: 1;
+  min-width: 2rem;
+}
+
+.endpoint-option-card h3 {
+  font-size: 1rem;
+  font-weight: 850;
+  color: var(--gray-900);
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+.endpoint-option-desc {
+  font-size: 0.85rem;
+  color: var(--gray-600);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.endpoint-option-features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  list-style: none;
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  font-weight: 550;
+}
+
+.endpoint-option-features li {
+  padding-left: 1.4rem;
+  position: relative;
+}
+
+.endpoint-option-features li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--green-dark);
+  font-weight: 800;
+}
+
+.endpoint-option-badge {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-}
-
-.radio-circle {
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--gray-300);
-  border-radius: 50%;
+  padding: 0.5rem 1rem;
+  background: var(--gray-100);
+  color: var(--gray-600);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
   transition: all 0.2s ease;
+  align-self: flex-start;
 }
 
-.radio-circle.active {
-  background: var(--primary);
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+.endpoint-option-card.selected .endpoint-option-badge {
+  background: linear-gradient(135deg, var(--blue-primary) 0%, var(--cyan-accent) 100%);
+  color: white;
 }
 
-.endpoint-icon {
-  font-size: 2.5rem;
-  text-align: center;
+/* === Configuration Section === */
+.ep-configuration-section {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.8rem;
+  margin: 2rem 0;
+  animation: slideDown 0.3s ease;
+}
+
+.ep-config-header {
+  margin-bottom: 1.5rem;
+}
+
+.ep-config-header h3 {
+  font-size: 1rem;
+  font-weight: 850;
+  color: var(--blue-primary);
+  margin-bottom: 0.3rem;
+  letter-spacing: -0.2px;
+}
+
+.ep-config-header p {
+  font-size: 0.85rem;
+  color: var(--gray-500);
+  margin: 0;
+}
+
+.ep-config-group {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.4rem;
+  margin-bottom: 1.5rem;
+}
+
+.ep-config-group:last-child {
+  margin-bottom: 0;
+}
+
+.ep-config-title {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1.3rem;
+  padding-bottom: 1rem;
+  border-bottom: 1.5px solid #f1f5f9;
+}
+
+.ep-config-icon {
+  font-size: 1.3rem;
   line-height: 1;
 }
 
-.endpoint-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.endpoint-title {
-  font-size: 1.1rem;
-  font-weight: 700;
+.ep-config-group h4 {
+  font-size: 0.95rem;
+  font-weight: 850;
   color: var(--gray-800);
+  margin: 0;
+  letter-spacing: -0.2px;
 }
 
-.endpoint-desc {
+.ep-config-group .form-group {
+  margin-bottom: 1.2rem;
+}
+
+.ep-config-group .form-group:last-child {
+  margin-bottom: 0;
+}
+
+/* === Tags Display === */
+.ep-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.ep-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.9rem;
+  background: linear-gradient(135deg, var(--blue-primary) 0%, var(--cyan-accent) 100%);
+  color: white;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  animation: slideDown 0.25s ease;
+}
+
+.ep-tag.sg {
+  background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-medium) 100%);
+}
+
+.ep-tag.rt {
+  background: linear-gradient(135deg, var(--orange-accent) 0%, #fb923c 100%);
+  color: white;
+}
+
+/* === Checkbox Form Group === */
+.form-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.9rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.form-checkbox:hover {
+  background: #f1f5f9;
+  border-color: var(--blue-light);
+}
+
+.form-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--blue-primary);
+}
+
+.form-checkbox input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.form-checkbox span {
   font-size: 0.9rem;
-  color: var(--gray-600);
+  font-weight: 600;
+  color: var(--gray-700);
+  flex: 1;
 }
 
-.endpoint-features {
+/* === Summary Box === */
+.ep-summary-box {
+  background: linear-gradient(135deg, var(--blue-pale) 0%, #f0f9ff 100%);
+  border: 1.5px solid var(--blue-light);
+  border-radius: 10px;
+  padding: 1.3rem;
+  margin: 1.5rem 0;
+}
+
+.ep-summary-box h4 {
+  font-size: 0.9rem;
+  font-weight: 850;
+  color: var(--blue-dark);
+  margin: 0 0 0.8rem 0;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+}
+
+.ep-summary-items {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.6rem;
+}
+
+.ep-summary-item {
   font-size: 0.85rem;
-  color: var(--gray-500);
-  list-style: none;
-  margin-top: 0.3rem;
+  font-weight: 700;
+  color: #0369a1;
+  padding-left: 1.6rem;
+  position: relative;
+  line-height: 1.4;
 }
 
-.endpoint-arrow {
-  font-size: 1.5rem;
-  opacity: 0;
-  transition: opacity 0.3s;
-  color: var(--primary);
+.ep-summary-item::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  font-weight: 900;
+  color: var(--blue-primary);
 }
 
-.endpoint-card:hover .endpoint-arrow {
-  opacity: 1;
+/* === Form Extensions === */
+.form-input.error {
+  border-color: var(--error) !important;
+  background-color: #fef2f2;
 }
 
-@media (max-width: 768px) {
-  .endpoint-card {
-    grid-template-columns: auto 1fr;
-    gap: 1rem;
-  }
-
-  .endpoint-icon {
-    font-size: 2rem;
-  }
-
-  .endpoint-arrow {
-    display: none;
-  }
+.form-input.locked {
+  background: var(--gray-100);
+  cursor: not-allowed;
+  opacity: 0.75;
 }
 
-/* === Professional Button Styles Enhancement === */
-.btn-block {
-  width: 100%;
+.form-input.disabled-by-option {
+  background: #f3f4f6;
+  opacity: 0.7;
 }
 
-.space-y-6 {
+.form-error {
+  display: block;
+  color: var(--error);
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* === Service Grid Checkboxes === */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.service-checkbox-label {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.9rem 1.1rem;
+  background: white;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+.service-checkbox-label:hover {
+  border-color: var(--blue-light);
+  background: #f0f9ff;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.service-checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--blue-primary);
+  flex-shrink: 0;
+}
+
+.service-checkbox-label input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.service-checkbox-label.checked {
+  background: var(--blue-pale);
+  border-color: var(--blue-primary);
+  color: var(--blue-dark);
+}
+
+.service-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+/* === Responsive Design === */
+@media (max-width: 768px) {
+  .endpoint-selector-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ep-configuration-section {
+    padding: 1.3rem;
+  }
+
+  .ep-config-group {
+    padding: 1.1rem;
+  }
+
+  .ep-step-header {
+    padding: 1.1rem 1.3rem;
+  }
+
+  .ep-step-header h2 {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .endpoint-option-content {
+    padding: 1.2rem;
+  }
+
+  .endpoint-option-icon {
+    font-size: 1.8rem;
+  }
+
+  .ep-tags {
+    gap: 0.5rem;
+  }
+
+  .ep-tag {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+  }
 }

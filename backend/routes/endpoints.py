@@ -24,9 +24,10 @@ class EndpointRequest(BaseModel):
     endpoint_type: str  # "Interface" or "Gateway"
     region: str
     vpc_id: str
-    service_name: str
-    tag_prefix: str
-    tag_suffix: str
+    service_names: Optional[List[str]] = None  # Multiple services (new)
+    service_name: Optional[str] = None  # Single service (legacy support)
+    tag_prefix: Optional[str] = None  # Optional tag prefix
+    tag_suffix: Optional[str] = None  # Optional tag suffix
     subnets: Optional[List[str]] = None  # For Interface
     security_groups: Optional[List[str]] = None  # For Interface
     private_dns_enabled: Optional[bool] = True  # For Interface
@@ -128,14 +129,14 @@ async def generate_script(request: EndpointRequest):
     if not request.vpc_id or request.vpc_id.strip() == "":
         validation_errors.append("vpc_id is required")
     
-    if not request.service_name or request.service_name.strip() == "":
-        validation_errors.append("service_name is required")
+    # Support both service_names (new) and service_name (legacy)
+    service_names = request.service_names or (([request.service_name] if request.service_name else []))
+    if not service_names or len(service_names) == 0:
+        validation_errors.append("service_name(s) is required")
     
-    if request.tag_prefix is None or request.tag_prefix.strip() == "":
-        validation_errors.append("tag_prefix is required")
-    
-    if request.tag_suffix is None or request.tag_suffix.strip() == "":
-        validation_errors.append("tag_suffix is required")
+    # Tag prefix and suffix are optional - allow empty strings
+    tag_prefix = request.tag_prefix or ""
+    tag_suffix = request.tag_suffix or ""
     
     # Validate endpoint-specific requirements
     if request.endpoint_type == "Interface":
@@ -160,24 +161,50 @@ async def generate_script(request: EndpointRequest):
     
     try:
         generator = ScriptGenerator()
-        ps1_content, command = generator.generate_ps1(
-            endpoint_type=request.endpoint_type,
-            region=request.region,
-            vpc_id=request.vpc_id,
-            service_name=request.service_name,
-            tag_prefix=request.tag_prefix,
-            tag_suffix=request.tag_suffix,
-            subnets=request.subnets,
-            security_groups=request.security_groups,
-            private_dns_enabled=request.private_dns_enabled,
-            route_tables=request.route_tables,
-            select_all_route_tables=request.select_all_route_tables
-        )
+        
+        # Support both single and multiple services
+        service_names_to_process = service_names if service_names else []
+        
+        # Generate scripts for all services
+        all_ps1_content = """# AWS VPC Endpoint Generation Script
+# Created by AWS VPC Endpoint Generator
+# This script will create multiple VPC endpoints
+
+$ErrorActionPreference = "Stop"
+
+"""
+        
+        # Generate a script section for each service
+        all_commands = []
+        for service_name in service_names_to_process:
+            ps1_content, command = generator.generate_ps1(
+                endpoint_type=request.endpoint_type,
+                region=request.region,
+                vpc_id=request.vpc_id,
+                service_name=service_name,
+                tag_prefix=tag_prefix,
+                tag_suffix=tag_suffix,
+                subnets=request.subnets,
+                security_groups=request.security_groups,
+                private_dns_enabled=request.private_dns_enabled,
+                route_tables=request.route_tables,
+                select_all_route_tables=request.select_all_route_tables
+            )
+            
+            # Extract just the try-catch block from the generated script
+            # Skip the header, add to combined script  
+            lines = ps1_content.split('\n')
+            script_body = '\n'.join([l for l in lines if l.strip() and not l.startswith('#')])
+            all_ps1_content += f"\n# Service: {service_name}\n{script_body}\n"
+            all_commands.append(command)
+        
+        # Combine all commands as comments
+        combined_command = " && ".join(all_commands) if all_commands else ""
         
         return ScriptGeneratedResponse(
             success=True,
-            ps1_content=ps1_content,
-            command=command
+            ps1_content=all_ps1_content,
+            command=combined_command
         )
     except Exception as e:
         error_msg = str(e)

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-function ConfigureForm({ onNext }) {
+function ConfigureForm({ onNext, isLocked = false }) {
   const [formData, setFormData] = useState({
     access_key: '',
     secret_key: '',
