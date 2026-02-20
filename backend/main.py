@@ -18,7 +18,13 @@ app = FastAPI(
 # CORS Middleware - Allow requests from frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # Vite dev server & fallback
+    allow_origins=[
+        
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://frontend:5173",
+        "http://vpc-endpoint-frontend:5173"
+    ],  # Local dev & Docker services
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -43,7 +49,7 @@ async def health_check():
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
-        host="127.0.0.1",
+        host="0.0.0.0",
         port=8000,
         reload=True
     )

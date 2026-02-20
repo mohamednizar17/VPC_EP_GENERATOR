@@ -32,6 +32,7 @@ function ConfigureForm({ onNext, isLocked = false }) {
     setLoading(true)
 
     try {
+      console.log('Sending request to /api/configure with data:', formData)
       const response = await fetch('/api/configure', {
         method: 'POST',
         headers: {
@@ -40,13 +41,24 @@ function ConfigureForm({ onNext, isLocked = false }) {
         body: JSON.stringify(formData),
       })
 
+      console.log('Response status:', response.status)
+      
       if (!response.ok) {
-        const errorData = await response.json()
+        let errorData
+        try {
+          errorData = await response.json()
+        } catch (e) {
+          errorData = { detail: response.statusText }
+        }
+        console.error('Error response:', errorData)
         throw new Error(errorData.detail || 'Configuration failed')
       }
 
+      const successData = await response.json()
+      console.log('Success response:', successData)
       onNext(formData)
     } catch (err) {
+      console.error('Request error:', err)
       setError(err.message)
     } finally {
       setLoading(false)

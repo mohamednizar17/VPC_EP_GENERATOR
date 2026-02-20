@@ -6,12 +6,15 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
-    host: '127.0.0.1',
+    host: '0.0.0.0',
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://backend:8000',  // Docker service name, falls back to localhost for local dev
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '/api')
+        rewrite: (path) => path.replace(/^\/api/, '/api'),
+        onError: (err, req, res) => {
+          console.log('Proxy error:', err);
+        }
       }
     }
   },

@@ -51,6 +51,16 @@ async def configure_aws(request: AWSConfigRequest):
     """
     Configure AWS CLI with provided credentials
     """
+    # Validate required fields
+    if not request.access_key or not request.access_key.strip():
+        raise HTTPException(status_code=400, detail="Access Key ID is required")
+    
+    if not request.secret_key or not request.secret_key.strip():
+        raise HTTPException(status_code=400, detail="Secret Access Key is required")
+    
+    if not request.region or not request.region.strip():
+        raise HTTPException(status_code=400, detail="Region is required")
+    
     try:
         aws_service = AWSService()
         result = aws_service.configure_credentials(
